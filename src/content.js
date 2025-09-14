@@ -1,6 +1,18 @@
 const ELEMENT_ID = 'osu-playstyle-div';
 let lastUrl = ''; // Used to track the URL and run only when it changes
 
+const createColoredPlaystyleHtml = (playstyle) => {
+    let coloredHtml = '';
+    for (const char of playstyle) {
+        if (char === 'k') {
+            coloredHtml += `<span style="color: #3399ff;">K</span>`; // A nice blue for Kat
+        } else if (char === 'd') {
+            coloredHtml += `<span style="color: #ff4d4d;">D</span>`; // A nice red for Don
+        }
+    }
+    return coloredHtml;
+};
+
 // This is the main function that does all the work
 const runProfilePlaystyle = () => {
 
@@ -23,33 +35,41 @@ const runProfilePlaystyle = () => {
         // 5. Find the player whose profile is being viewed
         const currentPlayer = players.find((player) => pathSegments.includes(player.player_id));
 
-        // 6. If we found the player, create and inject the display element
+        // 6. If found the player, find the username element and inject the span
         if (currentPlayer) {
-            const displayDiv = document.createElement('div');
-            displayDiv.id = ELEMENT_ID; // Assign the unique ID
-            displayDiv.textContent = `Playstyle: ${currentPlayer.playstyle_keyboard.toUpperCase()}`;
+            const usernameElement = document.querySelector('.profile-info__name');
 
-            // Apply all the necessary styling
-            displayDiv.style.position = 'fixed';
-            displayDiv.style.top = '80px';
-            displayDiv.style.right = '20px';
-            displayDiv.style.padding = '10px 15px';
-            displayDiv.style.backgroundColor = '#2a2a2a';
-            displayDiv.style.color = 'white';
-            displayDiv.style.border = '2px solid #ff66aa';
-            displayDiv.style.borderRadius = '8px';
-            displayDiv.style.zIndex = '9999';
-            displayDiv.style.fontFamily = 'sans-serif';
-            displayDiv.style.fontSize = '16px';
+            // Proceed only if the element exists and we haven't already added the span
+            if (usernameElement && !usernameElement.classList.contains('playstyle-profile-checked')) {
+                // Mark it as processed to prevent duplicates
+                usernameElement.classList.add('playstyle-profile-checked');
 
-            // Add the div to the page's body
-            document.body.appendChild(displayDiv);
+                const playstyleSpan = document.createElement('span');
+                playstyleSpan.className = 'playstyle-profile-span'; // Add a class for easy cleanup
+
+                // Append each letter for kats and dons with it's color
+                currentPlayer.playstyle_keyboard.split('').forEach(key => {
+                    const tempSpan = document.createElement('span');
+                    if (key === 'k') tempSpan.style.color = '#6bb7ffff';
+                    if (key === 'd') tempSpan.style.color = '#ff7c7cff';
+                    tempSpan.textContent = key.toUpperCase();
+                    playstyleSpan.appendChild(tempSpan);
+                });
+
+                // Style the span to look good next to the username
+                playstyleSpan.style.fontSize = '0.8em';
+                playstyleSpan.style.marginLeft = '8px';
+                playstyleSpan.style.fontWeight = 'bold';
+                playstyleSpan.style.verticalAlign = 'middle'; // Align it nicely with the username
+
+                // Inject the span right after the username element
+                usernameElement.appendChild(playstyleSpan);
+            }
         }
     });
 };
 
 const handleScoreboard = () => {
-        console.log("window.location.pathname", window.location.pathname)
     // 1. Only run on beatmap pages
     if (!window.location.pathname.startsWith('/beatmapsets/')) return;
 
@@ -59,8 +79,6 @@ const handleScoreboard = () => {
 
         // 2. Select all player links in the scoreboard that we haven't processed yet
         const playerLinks = document.querySelectorAll('.js-usercard:not(.playstyle-checked)');
-
-        console.log("playerLinks", playerLinks)
 
         playerLinks.forEach(link => {
             // 3. Mark this link as processed immediately to prevent infinite loops
@@ -76,10 +94,17 @@ const handleScoreboard = () => {
             // 6. If found, create and inject the playstyle span
             if (currentPlayer) {
                 const playstyleSpan = document.createElement('span');
-                playstyleSpan.textContent = `(${currentPlayer.playstyle_keyboard.toUpperCase()})`;
-                
+
+                // Append each letter for kats and dons with it's color
+                currentPlayer.playstyle_keyboard.split('').forEach(key => {
+                    const tempSpan = document.createElement('span');
+                    if (key === 'k') tempSpan.style.color = '#6bb7ffff';
+                    if (key === 'd') tempSpan.style.color = '#ff7c7cff';
+                    tempSpan.textContent = key.toUpperCase();
+                    playstyleSpan.appendChild(tempSpan);
+                });
+
                 // Style the span to be visible but not intrusive
-                playstyleSpan.style.color = '#ff66aa'; // Use a consistent color
                 playstyleSpan.style.fontSize = '0.9em';
                 playstyleSpan.style.marginLeft = '4px';
                 playstyleSpan.style.fontWeight = 'bold';
@@ -93,12 +118,9 @@ const handleScoreboard = () => {
 
 
 const checkToRun = () => {
-
-    console.log("efaoijnuhhuiefuhifaehiuaefhiue")
     if (location.href !== lastUrl || document.getElementById(ELEMENT_ID) == null) {
         runProfilePlaystyle();
     }
-
     handleScoreboard();
 }
 

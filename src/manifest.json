@@ -10,15 +10,17 @@
         "storage"
     ],
     "host_permissions": [
-        "https://osu.ppy.sh/users/*"
+        "https://osu.ppy.sh/users/*",
+        "https://osu.ppy.sh/beatmapsets/*"
     ],
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background.js",
+        "type": "module"
     },
     "content_scripts": [
         {
             "matches": [
-                "https://osu.ppy.sh/users/*"
+                "https://osu.ppy.sh/*"
             ],
             "js": [
                 "content.js"
