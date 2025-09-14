@@ -2,7 +2,7 @@ const ELEMENT_ID = 'osu-playstyle-div';
 let lastUrl = ''; // Used to track the URL and run only when it changes
 
 // This is the main function that does all the work
-const runPlaystyleCheck = () => {
+const runProfilePlaystyle = () => {
 
     lastUrl = location.href; // Update the last seen URL
 
@@ -48,10 +48,58 @@ const runPlaystyleCheck = () => {
     });
 };
 
+const handleScoreboard = () => {
+        console.log("window.location.pathname", window.location.pathname)
+    // 1. Only run on beatmap pages
+    if (!window.location.pathname.startsWith('/beatmapsets/')) return;
+
+    chrome.storage.local.get(['osuTaikoPlaystyles'], (result) => {
+        const players = result.osuTaikoPlaystyles;
+        if (!players) return;
+
+        // 2. Select all player links in the scoreboard that we haven't processed yet
+        const playerLinks = document.querySelectorAll('.js-usercard:not(.playstyle-checked)');
+
+        console.log("playerLinks", playerLinks)
+
+        playerLinks.forEach(link => {
+            // 3. Mark this link as processed immediately to prevent infinite loops
+            link.classList.add('playstyle-checked');
+
+            // 4. Extract the user ID from the link's href
+            const href = link.getAttribute('href');
+            if (!href) return;
+
+            // 5. Find the player's data
+            const currentPlayer = players.find((player) => href.includes(player.player_id));
+
+            // 6. If found, create and inject the playstyle span
+            if (currentPlayer) {
+                const playstyleSpan = document.createElement('span');
+                playstyleSpan.textContent = `(${currentPlayer.playstyle_keyboard.toUpperCase()})`;
+                
+                // Style the span to be visible but not intrusive
+                playstyleSpan.style.color = '#ff66aa'; // Use a consistent color
+                playstyleSpan.style.fontSize = '0.9em';
+                playstyleSpan.style.marginLeft = '4px';
+                playstyleSpan.style.fontWeight = 'bold';
+
+                // Inject the span right after the player's name link
+                link.insertAdjacentElement('afterend', playstyleSpan);
+            }
+        });
+    });
+};
+
+
 const checkToRun = () => {
+
+    console.log("efaoijnuhhuiefuhifaehiuaefhiue")
     if (location.href !== lastUrl || document.getElementById(ELEMENT_ID) == null) {
-        runPlaystyleCheck();
+        runProfilePlaystyle();
     }
+
+    handleScoreboard();
 }
 
 // Create an observer to watch for page changes
@@ -64,4 +112,4 @@ observer.observe(document.documentElement, {
 });
 
 // Run the check once for the initial page load
-runPlaystyleCheck();
+runProfilePlaystyle();
