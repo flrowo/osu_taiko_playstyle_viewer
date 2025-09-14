@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "Osu! Taiko Playstyle Viewer",
+    "version": "0.1.0",
+    "description": "Shows the playstyle (ddkk/kddk) for osu!taiko players on their profile page.",
+    "action": {
+        "default_icon": "shinchikuhome2.png"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "host_permissions": [
+        "https://osu.ppy.sh/users/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://osu.ppy.sh/users/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
