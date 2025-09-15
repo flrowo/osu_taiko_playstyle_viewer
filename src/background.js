@@ -29,6 +29,16 @@ const playerData = [
         "screen_resolutions": null,
         "screen_hz": null,
         "last_update": "2025-09-14"
+    },
+    {
+        "player_id": "7618046",
+        "player_name": "VoidStar",
+        "playstyle_keyboard": "ddkk",
+        "playstyle_fingers": 4,
+        "playstyle_alt": "single-tap",
+        "screen_resolutions": null,
+        "screen_hz": null,
+        "last_update": "2025-09-14"
     }
 ];
 
