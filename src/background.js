@@ -7,7 +7,8 @@ const playerData = [
         "playstyle_fingers": 2,
         "playstyle_alt": "100-full-alternate",
         "screen_resolutions": ["1280x960"],
-        "screen_hz": 144
+        "screen_hz": 144,
+        "last_update": "2025-09-14"
     },
     {
         "player_id": "3174184",
@@ -16,7 +17,8 @@ const playerData = [
         "playstyle_fingers": 4,
         "playstyle_alt": "full-alternate",
         "screen_resolutions": ["1360x768", "1600x768"],
-        "screen_hz": 60
+        "screen_hz": 60,
+        "last_update": "2025-09-14"
     },
     {
         "player_id": "3044264",
@@ -25,7 +27,8 @@ const playerData = [
         "playstyle_fingers": 4,
         "playstyle_alt": "cross-tap",
         "screen_resolutions": null,
-        "screen_hz": null
+        "screen_hz": null,
+        "last_update": "2025-09-14"
     }
 ];
 
